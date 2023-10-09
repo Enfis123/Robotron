@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>SCADA de Temperatura</title>
+</head>
+<body>
+    <header>
+        <h1>SCADA de Temperatura</h1>
+    </header>
+    <section class="temperature-chart">
+        <canvas id="temperature-chart"></canvas>
+    </section>
+    <section class="temperature-control">
+        <h2>Control de Temperatura</h2>
+        <label for="temperature-setpoint">Punto de Ajuste:</label>
+        <input type="number" id="temperature-setpoint" placeholder="Ingrese el valor">
+        <button id="set-temperature">Ajustar Temperatura</button>
+    </section>
+    <section class="temperature-alarm">
+        <h2>Alarma de Temperatura</h2>
+        <p id="alarm-message"></p>
+    </section>
+    <section class="temperature-records">
+        <h2>Registros de Temperatura</h2>
+        <ul id="temperature-list"></ul>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
+

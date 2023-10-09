@@ -1,0 +1,76 @@
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #007BFF;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    /* Estilos para las secciones */
+.temperature-chart, .temperature-control, .temperature-alarm, .temperature-records {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+}
+    canvas {
+        width: 100%;
+        /* Cambia esto para que el gráfico ocupe todo el espacio horizontal */
+        max-width: 100%;
+        /* Evita que el gráfico se extienda más allá del contenedor */
+        height: auto;
+        /* Permite que el gráfico mantenga su relación de aspecto */
+        display: block;
+        /* Elimina cualquier espacio adicional alrededor del canvas */
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        box-sizing: border-box;
+        /* Asegura que el ancho incluye el relleno */
+    }
+
+    button {
+        display: block;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Estilos para la sección de alarma */
+    .temperature-alarm {
+        background-color: #f8d7da;
+        /* Color de fondo de la alarma (rojo claro) */
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        /* Borde de la alarma (rojo más claro) */
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+
+    .temperature-alarm h2 {
+        color: #721c24;
+        /* Color de texto del encabezado (rojo oscuro) */
+    }
+
+    #temperature-status {
+        font-weight: bold;
+        font-size: 18px;
+        color: #721c24;
+        /* Color de texto del estado de la alarma (rojo oscuro) */
+    }
