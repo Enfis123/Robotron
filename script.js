@@ -1,74 +1,111 @@
-// Simulación de datos de temperatura
+// Simulación de datos de temperatura aleatorios
 function generateRandomTemperature() {
     return Math.floor(Math.random() * 100);
 }
 
-// Crear un gráfico de temperatura utilizando Chart.js
-var ctx = document.getElementById('temperature-chart').getContext('2d');
-var maxDataPoints = 20;
-
-var temperatureData = {
-    labels: [],
-    datasets: [{
-        label: 'Temperatura',
-        data: [],
-        borderColor: 'blue',
-        fill: true,
-    }]
-};
-
+// Inicialización del gráfico
+var ctx = document.getElementById("temperature-chart").getContext("2d");
 var temperatureChart = new Chart(ctx, {
-    type: 'line',
-    data: temperatureData,
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: "Temperatura",
+                borderColor: "rgb(75, 192, 192)",
+                data: [],
+                fill: true,
+            },
+        ],
+    },
     options: {
         scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: "Tiempo",
+                },
+            },
             y: {
-                beginAtZero: true,
-                max: 100
-            }
-        }
+                display: true,
+                title: {
+                    display: true,
+                    text: "Temperatura (°C)",
+                },
+                suggestedMin: 0,
+                suggestedMax: 100,
+            },
+        },
+    },
+});
+
+// Registro de temperaturas
+var temperatureList = document.getElementById("temperature-list");
+var alarmMessage = document.getElementById("alarm-message");
+var temperatureData = [];
+var timeLabels = [];
+var alarmTriggered = false;
+
+// Punto de ajuste de temperatura (puede ser modificado por el usuario)
+var temperatureSetpoint = 60;
+
+// Referencia al elemento de entrada para el punto de ajuste
+var temperatureSetpointInput = document.getElementById("temperature-setpoint");
+// Botón para aplicar el punto de ajuste
+var setTemperatureSetpointButton = document.getElementById("set-temperature");
+
+// Escuchar el clic en el botón para aplicar el punto de ajuste
+setTemperatureSetpointButton.addEventListener("click", function () {
+    var newSetpoint = parseInt(temperatureSetpointInput.value);
+
+    // Asegurarse de que el valor del punto de ajuste sea válido (por ejemplo, entre 0 y 100)
+    if (!isNaN(newSetpoint) && newSetpoint >= 0 && newSetpoint <= 100) {
+        // Actualizar el valor del punto de ajuste en tiempo real
+        temperatureSetpoint = newSetpoint;
     }
 });
 
-// Variables y elementos HTML
-var dataCounter = 0;
-var alarmActive = false;
-var alarmMessage = document.getElementById('alarm-message');
-var temperatureList = document.getElementById('temperature-list');
-
-// Agregar registro a la lista
-function addTemperatureRecord(time, temperature) {
-    var li = document.createElement('li');
-    li.textContent = `Tiempo: ${time}, Temperatura: ${temperature} grados`;
-    temperatureList.appendChild(li);
-}
-
-// Actualizar el gráfico y procesar datos
-setInterval(function () {
-    var temperatureValue = generateRandomTemperature();
+// Función para actualizar el gráfico y la lista de temperaturas
+function updateChartAndList() {
+    var temperature = generateRandomTemperature();
     var currentTime = new Date().toLocaleTimeString();
 
-    temperatureData.labels.push(currentTime);
-    temperatureData.datasets[0].data.push(temperatureValue);
+    // Agregar datos al gráfico
+    temperatureData.push(temperature);
+    timeLabels.push(currentTime);
 
-    if (dataCounter > maxDataPoints) {
-        temperatureData.labels.shift();
-        temperatureData.datasets[0].data.shift();
-    } else {
-        dataCounter++;
+    if (temperatureData.length > 10) {
+        temperatureData.shift();
+        timeLabels.shift();
     }
 
-    if (temperatureValue > 60 && !alarmActive) {
-        alarmActive = true;
-        alarmMessage.textContent = '¡Alarma de temperatura! La temperatura está por encima de 60 grados.';
-        alarmMessage.style.color = 'red';
-
-        addTemperatureRecord(currentTime, temperatureValue);
-    } else if (temperatureValue <= 60 && alarmActive) {
-        alarmActive = false;
-        alarmMessage.textContent = 'La temperatura está dentro del rango normal.';
-        alarmMessage.style.color = 'black';
-    }
-
+    temperatureChart.data.labels = timeLabels;
+    temperatureChart.data.datasets[0].data = temperatureData;
     temperatureChart.update();
-}, 1000);
+
+    // Agregar datos a la lista
+    var listItem = document.createElement("li");
+    listItem.textContent = `Temperatura a las ${currentTime}: ${temperature}°C`;
+
+    if (temperatureList.children.length >= 20) {
+        temperatureList.removeChild(temperatureList.firstElementChild);
+    }
+
+    temperatureList.appendChild(listItem);
+
+    // Comprobar la alarma según el punto de ajuste
+    if (temperature > temperatureSetpoint && !alarmTriggered) {
+        alarmTriggered = true;
+        alarmMessage.textContent = `¡Alarma de temperatura! La temperatura está por encima de ${temperatureSetpoint} grados.`;
+        alarmMessage.style.color = "red";
+    } else if (temperature <= temperatureSetpoint && alarmTriggered) {
+        alarmTriggered = false;
+        alarmMessage.textContent = `La temperatura está dentro del rango normal (<= ${temperatureSetpoint} grados).`;
+        alarmMessage.style.color = "black";
+    }
+}
+
+// Actualizar cada 5 segundos
+setInterval(updateChartAndList, 2000);
+
